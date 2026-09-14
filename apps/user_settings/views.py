@@ -18,4 +18,8 @@ def settings_view(request):
         settings_obj.save()
         return redirect('user_settings:settings')
 
-    return render(request, 'user_settings/settings.html', {'settings_obj': settings_obj})
+    profile = getattr(request.user, 'profile', None)
+    return render(request, 'user_settings/settings.html', {
+        'settings_obj': settings_obj,
+        'profile': profile,
+    })

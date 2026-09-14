@@ -12,22 +12,35 @@
 <body>
 <div class="dashboard">
     <div class="top-bar">
-        <span class="brand-mark">LOG·MY·OJT</span>
-        <div class="top-bar-nav">
-            <a href="{% url 'home:home' %}" class="active">Home</a>
-            <a href="{% url 'profile:profile' %}">Profile</a>
-            <a href="{% url 'user_settings:settings' %}">Settings</a>
-            <form method="post" action="{% url 'login:logout' %}" style="margin:0;">
-                {% csrf_token %}
-                <a href="#" onclick="this.closest('form').submit(); return false;">Log out</a>
-            </form>
+        <a href="{% url 'home:home' %}" class="brand-mark">LOG·MY·OJT</a>
+        <div class="nav-user">
+            <button class="user-chip-btn" id="nav-user-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+                <span class="chip-avatar">
+                    {% if profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="">
+                    {% else %}
+                        {{ request.user.username|slice:":1"|upper }}
+                    {% endif %}
+                </span>
+                <span>{{ request.user.first_name|default:request.user.username }}</span>
+                <span class="chip-caret">▾</span>
+            </button>
+            <div class="nav-dropdown" id="nav-dropdown">
+                <a href="{% url 'profile:profile' %}">Profile</a>
+                <a href="{% url 'user_settings:settings' %}">Settings</a>
+                <div class="dropdown-divider"></div>
+                <form method="post" action="{% url 'login:logout' %}" style="margin:0;">
+                    {% csrf_token %}
+                    <button type="submit">Log out</button>
+                </form>
+            </div>
         </div>
     </div>
     <div class="dash-body">
         <div class="dash-card">
             <p class="eyebrow">Home screen</p>
             <h2>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}.</h2>
-            <p>This is where your hour tally, pace alerts, and daily time log will live once your OJT placement is set up. For now, check out your Profile and Settings from the nav above.</p>
+            <p>This is where your hour tally, pace alerts, and daily time log will live once your OJT placement is set up. For now, check out your Profile and Settings from the menu above.</p>
             <div class="hours-stub">
                 <div>
                     <div class="num">0</div>
@@ -45,6 +58,7 @@
         </div>
     </div>
 </div>
+<script src="{% static 'js/shared/nav.js' %}"></script>
 <script src="{% static 'js/home/home.js' %}"></script>
 </body>
 </html>

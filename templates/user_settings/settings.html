@@ -12,15 +12,28 @@
 <body>
 <div class="settings-page">
     <div class="top-bar">
-        <span class="brand-mark">LOG·MY·OJT</span>
-        <div class="top-bar-nav">
-            <a href="{% url 'home:home' %}">Home</a>
-            <a href="{% url 'profile:profile' %}">Profile</a>
-            <a href="{% url 'user_settings:settings' %}" class="active">Settings</a>
-            <form method="post" action="{% url 'login:logout' %}" style="margin:0;">
-                {% csrf_token %}
-                <a href="#" onclick="this.closest('form').submit(); return false;">Log out</a>
-            </form>
+        <a href="{% url 'home:home' %}" class="brand-mark">LOG·MY·OJT</a>
+        <div class="nav-user">
+            <button class="user-chip-btn" id="nav-user-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+                <span class="chip-avatar">
+                    {% if profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="">
+                    {% else %}
+                        {{ request.user.username|slice:":1"|upper }}
+                    {% endif %}
+                </span>
+                <span>{{ request.user.first_name|default:request.user.username }}</span>
+                <span class="chip-caret">▾</span>
+            </button>
+            <div class="nav-dropdown" id="nav-dropdown">
+                <a href="{% url 'profile:profile' %}">Profile</a>
+                <a href="{% url 'user_settings:settings' %}" class="active">Settings</a>
+                <div class="dropdown-divider"></div>
+                <form method="post" action="{% url 'login:logout' %}" style="margin:0;">
+                    {% csrf_token %}
+                    <button type="submit">Log out</button>
+                </form>
+            </div>
         </div>
     </div>
     <div class="settings-body">
@@ -55,6 +68,7 @@
         </div>
     </div>
 </div>
+<script src="{% static 'js/shared/nav.js' %}"></script>
 <script src="{% static 'js/user_settings/settings.js' %}"></script>
 </body>
 </html>

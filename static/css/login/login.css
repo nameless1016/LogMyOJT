@@ -105,6 +105,12 @@
 
 .form-card { width: 100%; max-width: 380px; }
 
+.form-card .btn-stamp {
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.form-card .btn-stamp:active { transform: scale(0.99); }
+
 .form-card .eyebrow {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.78rem;

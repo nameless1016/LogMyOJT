@@ -45,7 +45,9 @@
 
             {% if errors %}
                 <div class="alert alert-error">
-                    {% for err in errors %}{{ err }}<br>{% endfor %}
+                    <ul>
+                        {% for err in errors %}<li>{{ err }}</li>{% endfor %}
+                    </ul>
                 </div>
             {% endif %}
 

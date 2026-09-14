@@ -18,6 +18,7 @@
   border: 1.5px solid var(--parchment-line);
   border-radius: 8px;
   padding: 2.2rem;
+  box-shadow: var(--shadow-soft);
 }
 
 .settings-card h2 {
