@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings · LogMyOJT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/user_settings/settings.css' %}">
+</head>
+<body>
+<div class="settings-page">
+    <div class="top-bar">
+        <span class="brand-mark">LOG·MY·OJT</span>
+        <div class="top-bar-nav">
+            <a href="{% url 'home:home' %}">Home</a>
+            <a href="{% url 'profile:profile' %}">Profile</a>
+            <a href="{% url 'user_settings:settings' %}" class="active">Settings</a>
+            <form method="post" action="{% url 'login:logout' %}" style="margin:0;">
+                {% csrf_token %}
+                <a href="#" onclick="this.closest('form').submit(); return false;">Log out</a>
+            </form>
+        </div>
+    </div>
+    <div class="settings-body">
+        <div class="settings-card">
+            <h2>Settings</h2>
+            <p class="sub">Control how LogMyOJT looks and notifies you.</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="toggle-row">
+                    <div>
+                        <div class="label-text">Dark mode</div>
+                        <div class="label-help">Switch the interface to a darker theme.</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="dark_mode" class="settings-autosave" {% if settings_obj.dark_mode %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-row">
+                    <div>
+                        <div class="label-text">Email notifications</div>
+                        <div class="label-help">Get notified when a supervisor approves an entry.</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="email_notifications" class="settings-autosave" {% if settings_obj.email_notifications %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <noscript><button type="submit" class="btn-stamp">Save settings</button></noscript>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/user_settings/settings.js' %}"></script>
+</body>
+</html>

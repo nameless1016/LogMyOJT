@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In · LogMyOJT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/login/login.css' %}">
+</head>
+<body>
+<div class="login-page">
+    <div class="ledger">
+        <div class="brand">
+            <span class="brand-mark">LOG·MY·OJT</span>
+            <h1>Your internship hours, tracked to the minute.</h1>
+            <p>No more paper logbooks or lost signatures. Time in, time out, and a running tally your supervisor can approve with one click.</p>
+        </div>
+        <div class="ledger-sample">
+            <div class="ledger-row">
+                <span class="day">Mon</span>
+                <span>08:58 AM &nbsp;→&nbsp; 05:02 PM</span>
+                <span class="status ok">approved</span>
+            </div>
+            <div class="ledger-row">
+                <span class="day">Tue</span>
+                <span>09:01 AM &nbsp;→&nbsp; 05:00 PM</span>
+                <span class="status ok">approved</span>
+            </div>
+            <div class="ledger-row">
+                <span class="day">Wed</span>
+                <span>09:00 AM &nbsp;→&nbsp; —</span>
+                <span class="status pending">pending</span>
+            </div>
+        </div>
+        <div class="ledger-foot">142 / 486 hours logged this term</div>
+    </div>
+
+    <div class="form-side">
+        <div class="form-card">
+            <p class="eyebrow">Welcome back</p>
+            <h2>Sign in</h2>
+            <p class="sub">Pick up where you left off — your logs and reports are waiting.</p>
+
+            {% if error %}
+                <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="field">
+                    <label for="id_username">Username</label>
+                    <input type="text" id="id_username" name="username" class="form-input" placeholder="Your username" value="{{ username|default:'' }}" required>
+                </div>
+                <div class="field">
+                    <label for="id_password">Password</label>
+                    <input type="password" id="id_password" name="password" class="form-input" placeholder="Your password" required>
+                </div>
+                <button type="submit" class="btn-stamp">Sign in</button>
+            </form>
+
+            <p class="switch-line">New to LogMyOJT? <a href="{% url 'register:register' %}">Create an account</a></p>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/login/login.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home · LogMyOJT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/home/home.css' %}">
+</head>
+<body>
+<div class="dashboard">
+    <div class="top-bar">
+        <span class="brand-mark">LOG·MY·OJT</span>
+        <div class="top-bar-nav">
+            <a href="{% url 'home:home' %}" class="active">Home</a>
+            <a href="{% url 'profile:profile' %}">Profile</a>
+            <a href="{% url 'user_settings:settings' %}">Settings</a>
+            <form method="post" action="{% url 'login:logout' %}" style="margin:0;">
+                {% csrf_token %}
+                <a href="#" onclick="this.closest('form').submit(); return false;">Log out</a>
+            </form>
+        </div>
+    </div>
+    <div class="dash-body">
+        <div class="dash-card">
+            <p class="eyebrow">Home screen</p>
+            <h2>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}.</h2>
+            <p>This is where your hour tally, pace alerts, and daily time log will live once your OJT placement is set up. For now, check out your Profile and Settings from the nav above.</p>
+            <div class="hours-stub">
+                <div>
+                    <div class="num">0</div>
+                    <div class="lbl">hours logged</div>
+                </div>
+                <div>
+                    <div class="num">—</div>
+                    <div class="lbl">hours remaining</div>
+                </div>
+                <div>
+                    <div class="num">0%</div>
+                    <div class="lbl">complete</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/home/home.js' %}"></script>
+</body>
+</html>

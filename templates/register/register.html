@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account · LogMyOJT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/register/register.css' %}">
+</head>
+<body>
+<div class="login-page">
+    <div class="ledger">
+        <div class="brand">
+            <span class="brand-mark">LOG·MY·OJT</span>
+            <h1>Set up in minutes. Log hours from day one.</h1>
+            <p>Add your placement details once — company, supervisor, required hours — and the tally runs itself for the rest of the term.</p>
+        </div>
+        <div class="ledger-sample">
+            <div class="ledger-row">
+                <span class="day">Req.</span>
+                <span>Total hours needed</span>
+                <span class="status pending">486 hrs</span>
+            </div>
+            <div class="ledger-row">
+                <span class="day">Sup.</span>
+                <span>Digital approval link</span>
+                <span class="status ok">enabled</span>
+            </div>
+            <div class="ledger-row">
+                <span class="day">Rep.</span>
+                <span>Submission-ready PDF</span>
+                <span class="status ok">ready</span>
+            </div>
+        </div>
+        <div class="ledger-foot">Built for OJT, practicum &amp; internship placements</div>
+    </div>
+
+    <div class="form-side">
+        <div class="form-card">
+            <p class="eyebrow">Get started</p>
+            <h2>Create your account</h2>
+            <p class="sub">One account per student — your logs stay private to you.</p>
+
+            {% if errors %}
+                <div class="alert alert-error">
+                    {% for err in errors %}{{ err }}<br>{% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" id="register-form" novalidate>
+                {% csrf_token %}
+                <div class="field">
+                    <label for="id_last_name">Last name</label>
+                    <input type="text" id="id_last_name" name="last_name" class="form-input" placeholder="Dela Cruz" value="{{ last_name|default:'' }}" required>
+                </div>
+                <div class="field">
+                    <label for="id_first_name">First name</label>
+                    <input type="text" id="id_first_name" name="first_name" class="form-input" placeholder="Juan" value="{{ first_name|default:'' }}" required>
+                </div>
+                <div class="field">
+                    <label for="id_username">Username</label>
+                    <input type="text" id="id_username" name="username" class="form-input" placeholder="Choose a username" value="{{ username|default:'' }}" required>
+                </div>
+                <div class="field">
+                    <label for="id_email">School email</label>
+                    <input type="email" id="id_email" name="email" class="form-input" placeholder="you@school.edu" value="{{ email|default:'' }}" required>
+                </div>
+                <div class="field">
+                    <label for="id_password">Password</label>
+                    <input type="password" id="id_password" name="password" class="form-input" placeholder="Create a password" required>
+                    <div class="field-help">At least 8 characters.</div>
+                </div>
+                <div class="field">
+                    <label for="id_password_confirm">Confirm password</label>
+                    <input type="password" id="id_password_confirm" name="password_confirm" class="form-input" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="btn-stamp">Create account</button>
+            </form>
+
+            <p class="switch-line">Already logging hours? <a href="{% url 'login:login' %}">Sign in</a></p>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/register/register.js' %}"></script>
+</body>
+</html>
