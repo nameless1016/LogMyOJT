@@ -72,8 +72,30 @@ python manage.py runserver
 Visit `http://127.0.0.1:8000/`. You'll land on `/login/` if not signed
 in yet — register first, then you'll be redirected to Home.
 
-## What's next
+## Connecting to Supabase PostgreSQL
 
-Supabase PostgreSQL integration (Part 2 of the activity) — swapping the
-`DATABASES` setting to point at Supabase via `.env` + `dj-database-url`,
-then re-running `migrate` against it. Not done yet on purpose.
+By default, if no `.env` file exists, the project falls back to local
+SQLite automatically — so it still runs before Supabase is configured.
+
+To switch to Supabase:
+
+1. Copy `.env.example` to a new file named `.env`.
+2. In your Supabase Dashboard, go to **Connect > Session pooler** and
+   copy the connection string.
+3. Paste it into `.env` as `DATABASE_URL=...`, replacing
+   `[PROJECT-REF]`, `[YOUR-PASSWORD]`, and `[POOLER-HOST]` with your
+   actual values.
+4. Run:
+   ```bash
+   python manage.py check
+   python manage.py migrate
+   python manage.py runserver
+   ```
+5. Open your Supabase Dashboard > Table Editor and confirm tables like
+   `auth_user`, `apps_user_profile_profile`, and
+   `apps_user_settings_usersettings` now exist.
+6. Register a test account through the app, then refresh Table Editor
+   to confirm the row appears in `auth_user`.
+
+`.env` is already listed in `.gitignore` — never commit your real
+database password.
