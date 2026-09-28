@@ -11,5 +11,8 @@ class UserSettings(models.Model):
     dark_mode = models.BooleanField(default=False)
     email_notifications = models.BooleanField(default=True)
 
+    class Meta:
+        db_table = 'user_settings'
+
     def __str__(self):
         return f"Settings for {self.user.username}"

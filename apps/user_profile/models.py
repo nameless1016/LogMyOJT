@@ -13,5 +13,8 @@ class Profile(models.Model):
     bio = models.TextField(blank=True)
     profile_image = models.ImageField(upload_to='profile/', blank=True, null=True)
 
+    class Meta:
+        db_table = 'profile'
+
     def __str__(self):
         return self.user.username

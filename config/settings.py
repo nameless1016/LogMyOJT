@@ -49,6 +49,10 @@ INSTALLED_APPS = [
     'apps.home',
     'apps.user_profile',
     'apps.user_settings',
+    'apps.placement',
+    'apps.time_log',
+    'apps.reminders',
+    'apps.reports',
 ]
 
 MIDDLEWARE = [
