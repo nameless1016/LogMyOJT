@@ -13,9 +13,9 @@
 
 .profile-card {
   width: 100%;
-  max-width: 480px;
-  background: #fff;
-  border: 1.5px solid var(--parchment-line);
+  max-width: 520px;
+  background: var(--card-bg, #fff);
+  border: 1.5px solid var(--card-border, var(--parchment-line));
   border-radius: 8px;
   padding: 2.2rem;
   box-shadow: var(--shadow-soft);
@@ -104,4 +104,17 @@ textarea.form-input {
   resize: vertical;
   min-height: 90px;
   font-family: 'Inter', sans-serif;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 520px) {
+  .field-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 }

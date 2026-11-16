@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/profile/profile.css' %}">
 </head>
-<body>
+<body class="{% if is_dark_mode %}dark-mode{% endif %}">
 <div class="profile-page">
     <div class="top-bar">
         <a href="{% url 'home:home' %}" class="brand-mark">LOG·MY·OJT</a>
@@ -40,7 +40,7 @@
         <div class="profile-card">
             {% include 'shared/messages.html' %}
             <h2>Your profile</h2>
-            <p class="sub">This is how you'll appear on approval requests sent to your supervisor.</p>
+            <p class="sub">This is how you'll appear on approval requests and timesheets sent to your supervisor.</p>
 
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -57,14 +57,27 @@
                     <input type="file" id="id_profile_image" name="profile_image" accept="image/*">
                 </div>
 
-                <div class="field">
-                    <label for="id_full_name">Full name</label>
-                    <input type="text" id="id_full_name" name="full_name" class="form-input" value="{{ profile.full_name }}" placeholder="Juan Dela Cruz">
+                <div class="field-grid">
+                    <div class="field">
+                        <label for="id_first_name">First name</label>
+                        <input type="text" id="id_first_name" name="first_name" class="form-input" value="{{ request.user.first_name }}" placeholder="Juan" required>
+                    </div>
+                    <div class="field">
+                        <label for="id_last_name">Last name</label>
+                        <input type="text" id="id_last_name" name="last_name" class="form-input" value="{{ request.user.last_name }}" placeholder="Dela Cruz" required>
+                    </div>
                 </div>
+
                 <div class="field">
-                    <label for="id_bio">Bio</label>
-                    <textarea id="id_bio" name="bio" class="form-input" placeholder="A short line about your OJT placement...">{{ profile.bio }}</textarea>
+                    <label for="id_email">School email</label>
+                    <input type="email" id="id_email" name="email" class="form-input" value="{{ request.user.email }}" placeholder="student@school.edu" required>
                 </div>
+
+                <div class="field">
+                    <label for="id_bio">Bio / OJT Objectives</label>
+                    <textarea id="id_bio" name="bio" class="form-input" rows="3" placeholder="A short line about your OJT role or training objectives...">{{ profile.bio }}</textarea>
+                </div>
+
                 <button type="submit" class="btn-stamp">Save profile</button>
             </form>
         </div>

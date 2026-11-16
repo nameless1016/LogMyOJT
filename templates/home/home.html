@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/home/home.css' %}">
 </head>
-<body>
+<body class="{% if is_dark_mode %}dark-mode{% endif %}">
 <div class="dashboard">
     <div class="top-bar">
         <a href="{% url 'home:home' %}" class="brand-mark">LOG·MY·OJT</a>

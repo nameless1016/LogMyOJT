@@ -45,8 +45,8 @@
   gap: 1.5rem;
   margin-top: 2rem;
   padding: 1.1rem 1.6rem;
-  background: #fff;
-  border: 1.5px dashed var(--parchment-line);
+  background: var(--card-bg, #fff);
+  border: 1.5px dashed var(--card-border, var(--parchment-line));
   border-radius: 6px;
   box-shadow: var(--shadow-soft);
 }
