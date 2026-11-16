@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 
 
@@ -12,15 +13,27 @@ def login_view(request):
         return redirect('home:home')
 
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            display_name = user.first_name if user.first_name else user.username
+            messages.success(request, f"Welcome back, {display_name}!")
             return redirect('home:home')
+        messages.error(request, 'Invalid username or password. Please verify your credentials and try again.')
         return render(request, 'login/login.html', {
-            'error': 'Invalid username or password.',
             'username': username,
         })
 
     return render(request, 'login/login.html')
+
+
+def logout_view(request):
+    """
+    Logout feature — signs the user out, sets an info flash message,
+    and returns them to the sign-in screen.
+    """
+    logout(request)
+    messages.info(request, 'You have been logged out successfully.')
+    return redirect('login:login')

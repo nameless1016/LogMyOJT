@@ -105,23 +105,77 @@ body {
   margin-top: 0.35rem;
 }
 
+.messages-container {
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
 .alert {
-  padding: 0.7rem 0.9rem;
-  border-radius: 4px;
-  font-size: 0.87rem;
-  margin-bottom: 1.3rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  animation: fadeInAlert 0.2s ease-out;
+}
+
+@keyframes fadeInAlert {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.alert-text {
+  flex: 1;
+}
+
+.alert-close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: currentColor;
+  cursor: pointer;
+  padding: 0 0.2rem;
+  opacity: 0.65;
+  transition: opacity 0.15s ease;
+}
+
+.alert-close:hover {
+  opacity: 1;
 }
 
 .alert-error {
-  background: rgba(179, 57, 44, 0.08);
+  background: rgba(179, 57, 44, 0.1);
   color: var(--error);
-  border: 1px solid rgba(179, 57, 44, 0.25);
+  border: 1px solid rgba(179, 57, 44, 0.28);
 }
 
 .alert-success {
-  background: rgba(79, 121, 66, 0.08);
+  background: rgba(79, 121, 66, 0.1);
   color: var(--approved);
-  border: 1px solid rgba(79, 121, 66, 0.25);
+  border: 1px solid rgba(79, 121, 66, 0.28);
+}
+
+.alert-info {
+  background: rgba(27, 42, 65, 0.08);
+  color: var(--ink-soft);
+  border: 1px solid rgba(27, 42, 65, 0.2);
+}
+
+.field-error {
+  font-size: 0.8rem;
+  color: var(--error);
+  margin-top: 0.35rem;
+  font-weight: 500;
+}
+
+.form-input.input-error {
+  border-color: var(--error);
+  background-color: rgba(179, 57, 44, 0.02);
 }
 
 .top-bar {

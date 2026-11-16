@@ -43,9 +43,7 @@
             <h2>Sign in</h2>
             <p class="sub">Pick up where you left off — your logs and reports are waiting.</p>
 
-            {% if error %}
-                <div class="alert alert-error">{{ error }}</div>
-            {% endif %}
+            {% include 'shared/messages.html' %}
 
             <form method="post" novalidate>
                 {% csrf_token %}

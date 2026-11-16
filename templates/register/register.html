@@ -43,13 +43,7 @@
             <h2>Create your account</h2>
             <p class="sub">One account per student — your logs stay private to you.</p>
 
-            {% if errors %}
-                <div class="alert alert-error">
-                    <ul>
-                        {% for err in errors %}<li>{{ err }}</li>{% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
+            {% include 'shared/messages.html' %}
 
             <form method="post" id="register-form" novalidate>
                 {% csrf_token %}
@@ -77,6 +71,7 @@
                 <div class="field">
                     <label for="id_password_confirm">Confirm password</label>
                     <input type="password" id="id_password_confirm" name="password_confirm" class="form-input" placeholder="Confirm your password" required>
+                    <div id="password-match-error" class="field-error" style="display: none;">Passwords do not match.</div>
                 </div>
                 <button type="submit" class="btn-stamp">Create account</button>
             </form>

@@ -38,6 +38,7 @@
     </div>
     <div class="dash-body">
         <div class="dash-card">
+            {% include 'shared/messages.html' %}
             <p class="eyebrow">Home screen</p>
             <h2>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}.</h2>
             <p>This is where your hour tally, pace alerts, and daily time log will live once your OJT placement is set up. For now, check out your Profile and Settings from the menu above.</p>
