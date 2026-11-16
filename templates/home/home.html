@@ -13,52 +13,284 @@
 <div class="dashboard">
     <div class="top-bar">
         <a href="{% url 'home:home' %}" class="brand-mark">LOG·MY·OJT</a>
-        <div class="nav-user">
-            <button class="user-chip-btn" id="nav-user-toggle" type="button" aria-haspopup="true" aria-expanded="false">
-                <span class="chip-avatar">
-                    {% if profile.profile_image %}
-                        <img src="{{ profile.profile_image.url }}" alt="">
-                    {% else %}
-                        {{ request.user.username|slice:":1"|upper }}
-                    {% endif %}
-                </span>
-                <span>{{ request.user.first_name|default:request.user.username }}</span>
-                <span class="chip-caret">▾</span>
-            </button>
-            <div class="nav-dropdown" id="nav-dropdown">
-                <a href="{% url 'profile:profile' %}">Profile</a>
-                <a href="{% url 'user_settings:settings' %}">Settings</a>
-                <div class="dropdown-divider"></div>
-                <form method="post" action="{% url 'login:logout' %}" style="margin:0;">
-                    {% csrf_token %}
-                    <button type="submit">Log out</button>
-                </form>
+        <div class="top-bar-nav">
+            <span class="term-tag">OJT TERM 2026</span>
+            <div class="nav-user">
+                <button class="user-chip-btn" id="nav-user-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="chip-avatar">
+                        {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="">
+                        {% else %}
+                            {{ request.user.username|slice:":1"|upper }}
+                        {% endif %}
+                    </span>
+                    <span>{{ request.user.first_name|default:request.user.username }}</span>
+                    <span class="chip-caret">▾</span>
+                </button>
+                <div class="nav-dropdown" id="nav-dropdown">
+                    <a href="{% url 'profile:profile' %}">Profile</a>
+                    <a href="{% url 'user_settings:settings' %}">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <form method="post" action="{% url 'login:logout' %}" style="margin:0;">
+                        {% csrf_token %}
+                        <button type="submit">Log out</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
     <div class="dash-body">
-        <div class="dash-card">
+        <div class="dash-container">
             {% include 'shared/messages.html' %}
-            <p class="eyebrow">Home screen</p>
-            <h2>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}.</h2>
-            <p>This is where your hour tally, pace alerts, and daily time log will live once your OJT placement is set up. For now, check out your Profile and Settings from the menu above.</p>
-            <div class="hours-stub">
+
+            <div class="dash-header">
                 <div>
-                    <div class="num">0</div>
-                    <div class="lbl">hours logged</div>
+                    <p class="eyebrow">Student Dashboard</p>
+                    <h2>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}.</h2>
                 </div>
-                <div>
-                    <div class="num">—</div>
-                    <div class="lbl">hours remaining</div>
+                {% if placement %}
+                <div class="header-actions">
+                    <button type="button" class="btn-stamp" id="btn-toggle-log">+ Log Hours</button>
                 </div>
-                <div>
-                    <div class="num">0%</div>
-                    <div class="lbl">complete</div>
+                {% endif %}
+            </div>
+
+            {% if placement %}
+            <!-- Placement Summary & Metrics -->
+            <div class="dash-grid">
+                <!-- Main Status Card -->
+                <div class="dash-card-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span class="badge-status">Active Placement</span>
+                            <h3 class="placement-title">{{ placement.company_name }}</h3>
+                            <p class="placement-sub">{{ placement.company_address }}</p>
+                        </div>
+                        <button type="button" class="btn-ghost-sm" id="btn-toggle-edit-placement">Edit</button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress-section">
+                        <div class="progress-labels">
+                            <span class="label">Term Progress</span>
+                            <span class="pct">{{ stats.progress_percent }}%</span>
+                        </div>
+                        <div class="progress-track" role="progressbar" aria-valuenow="{{ stats.progress_percent }}" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar-fill" style="width: {{ stats.progress_percent }}%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Metric Tiles -->
+                    <div class="metrics-grid">
+                        <div class="metric-tile">
+                            <div class="num">{{ stats.total_logged }}</div>
+                            <div class="lbl">Hours Logged</div>
+                        </div>
+                        <div class="metric-tile">
+                            <div class="num">{{ stats.hours_remaining }}</div>
+                            <div class="lbl">Hours Remaining</div>
+                        </div>
+                        <div class="metric-tile">
+                            <div class="num">{{ placement.required_hours }}</div>
+                            <div class="lbl">Target Hours</div>
+                        </div>
+                        <div class="metric-tile">
+                            <div class="num">{{ stats.progress_percent }}%</div>
+                            <div class="lbl">Completed</div>
+                        </div>
+                    </div>
+
+                    <div class="supervisor-details">
+                        <div class="detail-item">
+                            <span class="item-label">Supervisor:</span>
+                            <span class="item-value">{{ placement.supervisor_name }} ({{ placement.supervisor_email }})</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="item-label">Duration:</span>
+                            <span class="item-value">{{ placement.start_date }} &nbsp;→&nbsp; {{ placement.end_date }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Ledger -->
+                <div class="dash-card-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-heading">Recent Time Logs</h3>
+                        <span class="ledger-count">{{ stats.recent_logs|length }} logged</span>
+                    </div>
+
+                    {% if stats.recent_logs %}
+                    <div class="ledger-sample-home">
+                        {% for log in stats.recent_logs %}
+                        <div class="ledger-row-home">
+                            <div class="row-meta">
+                                <span class="day-badge">{{ log.log_date|date:"M d" }}</span>
+                                <span class="time-range">{{ log.time_in|time:"h:i A" }} → {{ log.time_out|time:"h:i A" }}</span>
+                            </div>
+                            <div class="row-hours">{{ log.hours_computed }} hrs</div>
+                            <span class="status ok">{{ log.status }}</span>
+                        </div>
+                        {% if log.activity_note %}
+                        <div class="log-activity-preview">{{ log.activity_note.description|truncatechars:70 }}</div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-logs">
+                        <p>No hours logged yet for this placement.</p>
+                        <button type="button" class="btn-stamp-sm" onclick="document.querySelector('#log-modal').style.display='flex';">Log your first day</button>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
+
+            <!-- Edit Placement Drawer/Card (Collapsible) -->
+            <div id="placement-edit-drawer" class="collapsible-card" style="display: none;">
+                <div class="dash-card-panel">
+                    <div class="panel-header">
+                        <h3>Update OJT Placement Details</h3>
+                        <button type="button" class="close-btn" onclick="document.querySelector('#placement-edit-drawer').style.display='none';">&times;</button>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="save_placement">
+                        <div class="form-grid-2">
+                            <div class="field">
+                                <label for="id_edit_company">Company Name</label>
+                                <input type="text" id="id_edit_company" name="company_name" class="form-input" value="{{ placement.company_name }}" required>
+                            </div>
+                            <div class="field">
+                                <label for="id_edit_address">Company Address</label>
+                                <input type="text" id="id_edit_address" name="company_address" class="form-input" value="{{ placement.company_address }}" required>
+                            </div>
+                            <div class="field">
+                                <label for="id_edit_sup_name">Supervisor Name</label>
+                                <input type="text" id="id_edit_sup_name" name="supervisor_name" class="form-input" value="{{ placement.supervisor_name }}" required>
+                            </div>
+                            <div class="field">
+                                <label for="id_edit_sup_email">Supervisor Email</label>
+                                <input type="email" id="id_edit_sup_email" name="supervisor_email" class="form-input" value="{{ placement.supervisor_email }}" required>
+                            </div>
+                            <div class="field">
+                                <label for="id_edit_sup_phone">Supervisor Phone</label>
+                                <input type="text" id="id_edit_sup_phone" name="supervisor_phone" class="form-input" value="{{ placement.supervisor_phone }}">
+                            </div>
+                            <div class="field">
+                                <label for="id_edit_req_hours">Required Hours</label>
+                                <input type="number" step="0.5" id="id_edit_req_hours" name="required_hours" class="form-input" value="{{ placement.required_hours }}" required>
+                            </div>
+                            <div class="field">
+                                <label for="id_edit_start">Start Date</label>
+                                <input type="date" id="id_edit_start" name="start_date" class="form-input" value="{{ placement.start_date|date:'Y-m-d' }}" required>
+                            </div>
+                            <div class="field">
+                                <label for="id_edit_end">End Date</label>
+                                <input type="date" id="id_edit_end" name="end_date" class="form-input" value="{{ placement.end_date|date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-stamp">Save Placement</button>
+                            <button type="button" class="btn-ghost-sm" onclick="document.querySelector('#placement-edit-drawer').style.display='none';">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Log Hours Modal -->
+            <div id="log-modal" class="modal-overlay" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Log Daily OJT Hours</h3>
+                        <button type="button" class="close-btn" id="btn-close-log-modal">&times;</button>
+                    </div>
+                    <form method="post" id="time-log-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="log_time">
+                        <div class="field">
+                            <label for="id_log_date">Log Date</label>
+                            <input type="date" id="id_log_date" name="log_date" class="form-input" value="{{ stats.today }}" required>
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="field">
+                                <label for="id_time_in">Time In</label>
+                                <input type="time" id="id_time_in" name="time_in" class="form-input" value="08:00" required>
+                            </div>
+                            <div class="field">
+                                <label for="id_time_out">Time Out</label>
+                                <input type="time" id="id_time_out" name="time_out" class="form-input" value="17:00" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="id_log_desc">Activity Summary / Accomplishments</label>
+                            <textarea id="id_log_desc" name="description" class="form-input" rows="3" placeholder="Tasks completed today (e.g. backend API endpoints, daily standup)..." required></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-stamp">Save Time Log</button>
+                            <button type="button" class="btn-ghost-sm" id="btn-cancel-log-modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- Initial Setup Card when no placement exists -->
+            <div class="dash-card-panel setup-panel">
+                <div class="setup-intro">
+                    <span class="brand-mark">GET STARTED</span>
+                    <h3>Register Your OJT Placement</h3>
+                    <p>Enter your internship company details and total required hours once. LogMyOJT will automatically maintain your daily time ledger and progress percentage.</p>
+                </div>
+
+                <form method="post" class="setup-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="save_placement">
+                    <div class="form-grid-2">
+                        <div class="field">
+                            <label for="id_setup_company">Company / Host Training Establishment</label>
+                            <input type="text" id="id_setup_company" name="company_name" class="form-input" placeholder="e.g. Acme Tech Solutions" required>
+                        </div>
+                        <div class="field">
+                            <label for="id_setup_address">Company Address</label>
+                            <input type="text" id="id_setup_address" name="company_address" class="form-input" placeholder="e.g. 123 Innovation Way, Tech Park" required>
+                        </div>
+                        <div class="field">
+                            <label for="id_setup_sup_name">Supervisor / Mentor Name</label>
+                            <input type="text" id="id_setup_sup_name" name="supervisor_name" class="form-input" placeholder="e.g. Engr. Maria Santos" required>
+                        </div>
+                        <div class="field">
+                            <label for="id_setup_sup_email">Supervisor Email</label>
+                            <input type="email" id="id_setup_sup_email" name="supervisor_email" class="form-input" placeholder="supervisor@company.com" required>
+                        </div>
+                        <div class="field">
+                            <label for="id_setup_sup_phone">Supervisor Phone (Optional)</label>
+                            <input type="text" id="id_setup_sup_phone" name="supervisor_phone" class="form-input" placeholder="+63 917 123 4567">
+                        </div>
+                        <div class="field">
+                            <label for="id_setup_req_hours">Total Required Hours</label>
+                            <input type="number" step="0.5" id="id_setup_req_hours" name="required_hours" class="form-input" placeholder="486" value="486" required>
+                            <div class="field-help">Standard internship hours (e.g. 486 or 600 hours).</div>
+                        </div>
+                        <div class="field">
+                            <label for="id_setup_start">Start Date</label>
+                            <input type="date" id="id_setup_start" name="start_date" class="form-input" value="{{ stats.today }}" required>
+                        </div>
+                        <div class="field">
+                            <label for="id_setup_end">Estimated End Date</label>
+                            <input type="date" id="id_setup_end" name="end_date" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="setup-submit">
+                        <button type="submit" class="btn-stamp">Initialize OJT Placement</button>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+
         </div>
     </div>
 </div>
+
 <script src="{% static 'js/shared/nav.js' %}"></script>
 <script src="{% static 'js/home/home.js' %}"></script>
 </body>
