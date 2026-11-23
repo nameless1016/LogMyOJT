@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Log Insights (SQL SUBQUERY) · LogMyOJT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/time_log/time_log.css' %}">
+</head>
+<body class="{% if is_dark_mode %}dark-mode{% endif %}">
+<div class="dashboard">
+    <div class="top-bar">
+        <a href="{% url 'home:home' %}" class="brand-mark">LOG·MY·OJT</a>
+        <div class="top-bar-nav">
+            <span class="term-tag">OJT TERM 2026</span>
+            <div class="nav-user">
+                <button class="user-chip-btn" id="nav-user-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="chip-avatar">
+                        {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="">
+                        {% else %}
+                            {{ request.user.username|slice:":1"|upper }}
+                        {% endif %}
+                    </span>
+                    <span>{{ request.user.first_name|default:request.user.username }}</span>
+                    <span class="chip-caret">▾</span>
+                </button>
+                <div class="nav-dropdown" id="nav-dropdown">
+                    <a href="{% url 'profile:profile' %}">Profile</a>
+                    <a href="{% url 'user_settings:settings' %}">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <form method="post" action="{% url 'login:logout' %}" style="margin:0;">
+                        {% csrf_token %}
+                        <button type="submit">Log out</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dash-body">
+        <div class="dash-container">
+            {% include 'shared/messages.html' %}
+
+            <!-- Feature Navigation Tabs -->
+            <div class="page-nav-tabs">
+                <a href="{% url 'time_log:history' %}" class="nav-tab-btn">Full History (JOIN)</a>
+                <a href="{% url 'time_log:insights' %}" class="nav-tab-btn active">Insights (SUBQUERY)</a>
+                <a href="{% url 'home:home' %}" class="nav-tab-back">← Back to Dashboard</a>
+            </div>
+
+            <div class="dash-header">
+                <div>
+                    <p class="eyebrow">Database Subquery Demonstration</p>
+                    <h2>Pace Insights & Above-Average Days</h2>
+                </div>
+            </div>
+
+            <!-- Average Hours Banner -->
+            <div class="stat-banner">
+                <div>
+                    <div class="stat-title">Your Daily Average</div>
+                    <div class="stat-value">{% if avg_hours %}{{ avg_hours }} <span style="font-size:1.1rem; font-family:'IBM Plex Mono',monospace; color:var(--text-mute);">hrs/day</span>{% else %}0.00 hrs{% endif %}</div>
+                </div>
+                <div class="stat-desc">
+                    Calculated across all completed work days with logged hours. Days exceeding this threshold are retrieved via an SQL subquery comparing daily hours to your personal average.
+                </div>
+            </div>
+
+            <!-- Section 1: Above-Average Days (Prompt 3) -->
+            <div style="margin-bottom: 2rem;">
+                <h3 style="font-family:'Fraunces',serif; font-size:1.3rem; margin-bottom:0.4rem; color:var(--ink);">
+                    Above-Average Days ({{ above_count }})
+                </h3>
+                <p class="sql-caption" style="margin-bottom:1rem;">
+                    <strong>Subquery logic:</strong> <code>SELECT * FROM time_log WHERE hours_computed &gt; (SELECT AVG(hours_computed) FROM time_log WHERE ...)</code>
+                </p>
+
+                <div class="table-card">
+                    {% if above_average_logs %}
+                    <table class="log-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Company</th>
+                                <th>Logged Hours</th>
+                                <th>Above Average</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in above_average_logs %}
+                            <tr>
+                                <td class="col-date" data-label="Date">{{ log.log_date|date:"Y-m-d" }}</td>
+                                <td data-label="Company">{{ log.placement.company_name }}</td>
+                                <td class="col-hours" data-label="Logged Hours">{{ log.hours_computed }} h</td>
+                                <td class="col-diff" data-label="Above Average">+{{ log.hours_diff }} h</td>
+                                <td data-label="Status">
+                                    <span class="badge-status-pill {{ log.status }}">{{ log.status }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-history-state">
+                        <p>No days above your average yet. Keep logging your daily hours!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Section 2: Missing Activity Notes (Prompt 3B) -->
+            <div>
+                <h3 style="font-family:'Fraunces',serif; font-size:1.3rem; margin-bottom:0.4rem; color:var(--ink);">
+                    Logs Missing Activity Notes ({{ missing_count }})
+                </h3>
+                <p class="sql-caption" style="margin-bottom:1rem;">
+                    <strong>Subquery logic:</strong> <code>SELECT * FROM time_log WHERE id NOT IN (SELECT time_log_id FROM activity_note)</code>
+                </p>
+
+                <div class="table-card">
+                    {% if missing_notes_logs %}
+                    <table class="log-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Company</th>
+                                <th>Time Range</th>
+                                <th>Hours</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in missing_notes_logs %}
+                            <tr>
+                                <td class="col-date" data-label="Date">{{ log.log_date|date:"Y-m-d" }}</td>
+                                <td data-label="Company">{{ log.placement.company_name }}</td>
+                                <td data-label="Time Range">{{ log.time_in|time:"h:i A" }} → {{ log.time_out|time:"h:i A"|default:"—" }}</td>
+                                <td class="col-hours" data-label="Hours">{{ log.hours_computed }} h</td>
+                                <td data-label="Status">
+                                    <span class="badge-status-pill {{ log.status }}">{{ log.status }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-history-state">
+                        <p>All time logs have an activity note recorded! Great job keeping your logbook up to date.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/shared/nav.js' %}"></script>
+</body>
+</html>

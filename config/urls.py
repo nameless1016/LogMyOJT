@@ -11,6 +11,7 @@ urlpatterns = [
     path('register/', include('apps.register.urls')),
     path('profile/', include('apps.user_profile.urls')),
     path('settings/', include('apps.user_settings.urls')),
+    path('logs/', include('apps.time_log.urls')),
     path('', include('apps.home.urls')),
 ]
 

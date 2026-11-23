@@ -116,7 +116,13 @@
                 <!-- Recent Activity Ledger -->
                 <div class="dash-card-panel">
                     <div class="panel-header">
-                        <h3 class="panel-heading">Recent Time Logs</h3>
+                        <div>
+                            <h3 class="panel-heading">Recent Time Logs</h3>
+                            <div style="margin-top: 0.35rem; display: flex; gap: 0.8rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;">
+                                <a href="{% url 'time_log:history' %}" style="color: var(--stamp); text-decoration: none; font-weight: 500;">View full history →</a>
+                                <a href="{% url 'time_log:insights' %}" style="color: var(--text-mute); text-decoration: none;">Insights (Subquery) →</a>
+                            </div>
+                        </div>
                         <span class="ledger-count">{{ stats.recent_logs|length }} logged</span>
                     </div>
 
