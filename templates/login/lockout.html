@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Temporarily Locked · LogMyOJT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/login/login.css' %}">
+</head>
+<body>
+<div class="login-page">
+    <div class="form-side" style="margin: 3rem auto; max-width: 520px; width: 100%;">
+        <div class="form-card">
+            <span class="brand-mark" style="margin-bottom: 1rem; display: inline-block;">LOG·MY·OJT</span>
+            <p class="eyebrow" style="color: #b3261e;">Security Alert</p>
+            <h2>Too Many Failed Sign-In Attempts</h2>
+            <p class="sub">
+                For security reasons, your account or network has been temporarily locked out after 5 consecutive failed sign-in attempts.
+            </p>
+            <div class="alert alert-error" style="margin: 1.5rem 0;">
+                <span class="alert-text">
+                    Please wait <strong>15 minutes</strong> before trying again. If you have forgotten your password, you can reset it via your registered email.
+                </span>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <a href="{% url 'login:password_reset' %}" class="btn-stamp" style="text-decoration: none; text-align: center;">Reset password</a>
+                <a href="{% url 'login:login' %}" style="display: inline-flex; align-items: center; text-decoration: none; color: var(--ink,#1b2a41); font-size: 0.9rem;">Back to sign in</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -4,21 +4,27 @@
 
 document.addEventListener('DOMContentLoaded', function () {
   const btnToggleLog = document.querySelector('#btn-toggle-log');
+  const btnOpenFirstLog = document.querySelector('#btn-open-first-log');
   const logModal = document.querySelector('#log-modal');
   const btnCloseLogModal = document.querySelector('#btn-close-log-modal');
   const btnCancelLogModal = document.querySelector('#btn-cancel-log-modal');
 
   const btnToggleEdit = document.querySelector('#btn-toggle-edit-placement');
   const editDrawer = document.querySelector('#placement-edit-drawer');
+  const btnClosePlacementDrawer = document.querySelector('#btn-close-placement-drawer');
+  const btnCancelPlacementDrawer = document.querySelector('#btn-cancel-placement-drawer');
 
-  // Open Log Modal
-  if (btnToggleLog && logModal) {
-    btnToggleLog.addEventListener('click', function () {
+  function openLogModal() {
+    if (logModal) {
       logModal.style.display = 'flex';
       const timeIn = document.querySelector('#id_time_in');
       if (timeIn) timeIn.focus();
-    });
+    }
   }
+
+  // Open Log Modal
+  if (btnToggleLog) btnToggleLog.addEventListener('click', openLogModal);
+  if (btnOpenFirstLog) btnOpenFirstLog.addEventListener('click', openLogModal);
 
   // Close Log Modal
   function closeLogModal() {
@@ -34,6 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  function closeEditDrawer() {
+    if (editDrawer) editDrawer.style.display = 'none';
+  }
+
+  if (btnClosePlacementDrawer) btnClosePlacementDrawer.addEventListener('click', closeEditDrawer);
+  if (btnCancelPlacementDrawer) btnCancelPlacementDrawer.addEventListener('click', closeEditDrawer);
+
   // Toggle Edit Placement Drawer
   if (btnToggleEdit && editDrawer) {
     btnToggleEdit.addEventListener('click', function () {
@@ -41,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         editDrawer.style.display = 'block';
         editDrawer.scrollIntoView({ behavior: 'smooth' });
       } else {
-        editDrawer.style.display = 'none';
+        closeEditDrawer();
       }
     });
   }

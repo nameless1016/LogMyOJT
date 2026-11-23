@@ -4,7 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', function () {
   const usernameField = document.querySelector('#id_username');
-  if (usernameField) {
+  if (usernameField && !usernameField.value) {
     usernameField.focus();
   }
 });

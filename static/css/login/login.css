@@ -149,3 +149,10 @@
 }
 
 .switch-line a:hover { text-decoration: underline; }
+
+/* Ensure browser native password eye icon (Edge / WebKit) is visible inside the input */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: inline-block !important;
+  cursor: pointer;
+}

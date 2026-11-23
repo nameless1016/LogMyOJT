@@ -98,4 +98,22 @@ To switch to Supabase:
    to confirm the row appears in `auth_user`.
 
 `.env` is already listed in `.gitignore` — never commit your real
+credentials or secrets to Git.
+
+## Security Controls
+
+LogMyOJT implements defense-in-depth security measures across all layers:
+
+1. **Environment Configuration**: Secrets, debug mode, and database credentials are strictly loaded via `.env` and environment variables. `DEBUG` defaults to `False`. When `DEBUG` is `False`, missing `DJANGO_SECRET_KEY` raises `ImproperlyConfigured`.
+2. **Production Headers & SSL**: Production configurations enforce `SECURE_SSL_REDIRECT`, `SESSION_COOKIE_SECURE`, `CSRF_COOKIE_SECURE`, `SESSION_COOKIE_HTTPONLY`, HSTS headers (`SECURE_HSTS_SECONDS=3600`), and `X_FRAME_OPTIONS = 'DENY'`.
+3. **Content Security Policy (CSP)**: Strict Content-Security-Policy middleware restricts script sources to `'self'`, blocking inline script execution and unauthorized remote origins.
+4. **Rate Limiting & Lockout**: Brute-force login attempts are throttled using `django-axes` (5 consecutive failures lock out for 15 minutes by IP and username).
+5. **Strict Auth Validation**:
+   - Minimum password length is enforced at 10 characters with standard Django similarity, common-password, and numeric checks.
+   - Usernames and school email addresses are strictly checked for uniqueness case-insensitively (`iexact`).
+   - Logout is strictly `POST`-only with CSRF token protection.
+   - Redirect targets (`?next=`) are validated with `url_has_allowed_host_and_scheme` to prevent open redirects.
+6. **Upload Sanitization**: Uploaded avatars are restricted to JPEG, PNG, and WebP, capped at 2MB, validated via Pillow file stream inspection, and re-saved to strip unsafe EXIF metadata.
+7. **Supabase Database Protection**: Instructions and SQL script in `docs/SUPABASE_RLS.md` enable PostgreSQL Row Level Security (RLS) on all public schema tables, blocking unauthorized PostgREST/REST access while preserving direct Django database operations.
+
 database password.

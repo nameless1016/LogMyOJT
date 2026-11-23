@@ -340,3 +340,10 @@ textarea:focus-visible,
     padding: 1rem 1.25rem;
   }
 }
+
+/* Native browser password reveal icon */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: inline-block !important;
+  cursor: pointer;
+}

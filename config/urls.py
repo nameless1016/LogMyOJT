@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+
+from apps.user_profile.views import protected_media_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -14,3 +16,9 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # Serve media via protected view with traversal checks in production environments without S3/Supabase Storage
+    media_url_prefix = settings.MEDIA_URL.lstrip('/')
+    urlpatterns += [
+        re_path(rf'^{media_url_prefix}(?P<path>.*)$', protected_media_view, name='protected_media'),
+    ]

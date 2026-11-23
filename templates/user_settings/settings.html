@@ -66,6 +66,12 @@
                 </div>
                 <noscript><button type="submit" class="btn-stamp">Save settings</button></noscript>
             </form>
+
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px dashed var(--rule,#d8cfbe);">
+                <div class="label-text" style="font-weight: 600; margin-bottom: 0.35rem;">Account Security</div>
+                <div class="label-help" style="margin-bottom: 1rem; color: var(--ink-light,#5c6b73); font-size: 0.85rem;">Manage your login credentials.</div>
+                <a href="{% url 'login:password_change' %}" class="btn-stamp-sm" style="display:inline-block; text-decoration:none;">Change password</a>
+            </div>
         </div>
     </div>
 </div>

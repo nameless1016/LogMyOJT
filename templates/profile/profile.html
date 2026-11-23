@@ -54,28 +54,43 @@
                         {% endif %}
                     </span>
                     <label class="avatar-overlay" for="id_profile_image">Change<br>photo</label>
-                    <input type="file" id="id_profile_image" name="profile_image" accept="image/*">
+                    <input type="file" id="id_profile_image" name="profile_image" accept="image/jpeg,image/png,image/webp">
                 </div>
+                {% if form.profile_image.errors %}
+                    <div class="field-error" style="color:#b3261e; font-size:0.85rem; margin-bottom:1rem; text-align:center;">{{ form.profile_image.errors.0 }}</div>
+                {% endif %}
 
                 <div class="field-grid">
                     <div class="field">
                         <label for="id_first_name">First name</label>
-                        <input type="text" id="id_first_name" name="first_name" class="form-input" value="{{ request.user.first_name }}" placeholder="Juan" required>
+                        <input type="text" id="id_first_name" name="first_name" class="form-input{% if form.first_name.errors %} input-error{% endif %}" value="{{ form.first_name.value|default:request.user.first_name }}" placeholder="Juan" required>
+                        {% if form.first_name.errors %}
+                            <div class="field-error" style="color:#b3261e; font-size:0.85rem; margin-top:0.25rem;">{{ form.first_name.errors.0 }}</div>
+                        {% endif %}
                     </div>
                     <div class="field">
                         <label for="id_last_name">Last name</label>
-                        <input type="text" id="id_last_name" name="last_name" class="form-input" value="{{ request.user.last_name }}" placeholder="Dela Cruz" required>
+                        <input type="text" id="id_last_name" name="last_name" class="form-input{% if form.last_name.errors %} input-error{% endif %}" value="{{ form.last_name.value|default:request.user.last_name }}" placeholder="Dela Cruz" required>
+                        {% if form.last_name.errors %}
+                            <div class="field-error" style="color:#b3261e; font-size:0.85rem; margin-top:0.25rem;">{{ form.last_name.errors.0 }}</div>
+                        {% endif %}
                     </div>
                 </div>
 
                 <div class="field">
                     <label for="id_email">School email</label>
-                    <input type="email" id="id_email" name="email" class="form-input" value="{{ request.user.email }}" placeholder="student@school.edu" required>
+                    <input type="email" id="id_email" name="email" class="form-input{% if form.email.errors %} input-error{% endif %}" value="{{ form.email.value|default:request.user.email }}" placeholder="student@school.edu" required>
+                    {% if form.email.errors %}
+                        <div class="field-error" style="color:#b3261e; font-size:0.85rem; margin-top:0.25rem;">{{ form.email.errors.0 }}</div>
+                    {% endif %}
                 </div>
 
                 <div class="field">
                     <label for="id_bio">Bio / OJT Objectives</label>
-                    <textarea id="id_bio" name="bio" class="form-input" rows="3" placeholder="A short line about your OJT role or training objectives...">{{ profile.bio }}</textarea>
+                    <textarea id="id_bio" name="bio" class="form-input{% if form.bio.errors %} input-error{% endif %}" rows="3" placeholder="A short line about your OJT role or training objectives...">{{ form.bio.value|default:profile.bio }}</textarea>
+                    {% if form.bio.errors %}
+                        <div class="field-error" style="color:#b3261e; font-size:0.85rem; margin-top:0.25rem;">{{ form.bio.errors.0 }}</div>
+                    {% endif %}
                 </div>
 
                 <button type="submit" class="btn-stamp">Save profile</button>

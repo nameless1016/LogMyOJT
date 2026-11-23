@@ -139,7 +139,7 @@
                     {% else %}
                     <div class="empty-logs">
                         <p>No hours logged yet for this placement.</p>
-                        <button type="button" class="btn-stamp-sm" onclick="document.querySelector('#log-modal').style.display='flex';">Log your first day</button>
+                        <button type="button" class="btn-stamp-sm" id="btn-open-first-log">Log your first day</button>
                     </div>
                     {% endif %}
                 </div>
@@ -150,7 +150,7 @@
                 <div class="dash-card-panel">
                     <div class="panel-header">
                         <h3>Update OJT Placement Details</h3>
-                        <button type="button" class="close-btn" onclick="document.querySelector('#placement-edit-drawer').style.display='none';">&times;</button>
+                        <button type="button" class="close-btn" id="btn-close-placement-drawer">&times;</button>
                     </div>
                     <form method="post">
                         {% csrf_token %}
@@ -191,7 +191,7 @@
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn-stamp">Save Placement</button>
-                            <button type="button" class="btn-ghost-sm" onclick="document.querySelector('#placement-edit-drawer').style.display='none';">Cancel</button>
+                            <button type="button" class="btn-ghost-sm" id="btn-cancel-placement-drawer">Cancel</button>
                         </div>
                     </form>
                 </div>

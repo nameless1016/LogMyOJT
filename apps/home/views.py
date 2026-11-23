@@ -1,5 +1,6 @@
 from decimal import Decimal
 import datetime
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
@@ -122,7 +123,7 @@ def home_view(request):
         'hours_remaining': Decimal('0.00'),
         'progress_percent': 0.0,
         'recent_logs': [],
-        'today': datetime.date.today().isoformat(),
+        'today': timezone.localdate().isoformat(),
     }
 
     if placement:
